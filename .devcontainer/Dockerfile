@@ -62,7 +62,9 @@ RUN curl -o /tmp/prestashop.zip -L ${PS_ZIP_URL} \
     && unzip /tmp/prestashop/prestashop.zip -d /var/www/html \
     && rm -rf /tmp/* \
     && curl -o /var/www/html/phppsinfo.php -L ${PHP_PS_INFO_URL} \
-    && chown -R www-data:www-data /var/www/html
+    && chown -R www-data:www-data /var/www/html \
+    && find /var/www/html -type f -exec chmod 644 -- {} + \
+    && find /var/www/html -type d -exec chmod 755 {} +
 
 COPY ./docker-prestashop-entrypoint.sh /usr/local/bin/docker-prestashop-entrypoint
 RUN chmod +x /usr/local/bin/docker-prestashop-entrypoint && \ 
