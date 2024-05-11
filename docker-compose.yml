@@ -1,0 +1,35 @@
+x-env_file: &env_file
+  env_file:
+    - .env
+
+services:
+  web:
+    image: michelescalantea/prestashop:${PS_VERSION}-php${PHP_VERSION}
+    build:
+      dockerfile: Dockerfile
+      context: ./.devcontainer
+      args:
+        PHP_VERSION: $PHP_VERSION
+        PS_VERSION: $PS_VERSION
+        PS_ZIP_URL: $PS_ZIP_URL
+    depends_on:
+      - db
+    ports:
+      - 8000:80
+    extra_hosts:
+      - "localhost.prestashop.com:host-gateway"
+    <<: *env_file
+    volumes:
+      - prestashop:/var/www/html
+  db:
+    # image: mysql:$MYSQL_VERSION
+    image: mariadb:11
+    ports:
+      - 3307:3306
+    <<: *env_file
+    volumes:
+      - prestashop_db:/var/lib/mysql
+  
+volumes:
+  prestashop:
+  prestashop_db:
